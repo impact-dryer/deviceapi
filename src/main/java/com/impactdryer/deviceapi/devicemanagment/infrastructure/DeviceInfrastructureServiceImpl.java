@@ -3,6 +3,7 @@ package com.impactdryer.deviceapi.devicemanagment.infrastructure;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
 import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,20 @@ public class DeviceInfrastructureServiceImpl implements DeviceInfrastructureServ
                 .findByMacAddress(mac.value())
                 .map(DeviceInfrastructureServiceImpl::getDeviceRegistration)
                 .orElseThrow(() -> new DeviceNotFound(mac));
+    }
+
+    @Override
+    public List<DeviceRegistration> getAllDevices() {
+        return deviceRepository.findAll().stream()
+                .map(DeviceInfrastructureServiceImpl::getDeviceRegistration)
+                .toList();
+    }
+
+    @Override
+    public List<DeviceRegistration> getAllDevicesSortedByType() {
+        return deviceRepository.findAllSortedByType().stream()
+                .map(DeviceInfrastructureServiceImpl::getDeviceRegistration)
+                .toList();
     }
 
     private DeviceEntity saveDevice(DeviceRegistration deviceRegistration) {

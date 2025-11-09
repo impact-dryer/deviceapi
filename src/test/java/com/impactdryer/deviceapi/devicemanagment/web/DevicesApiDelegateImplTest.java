@@ -9,6 +9,7 @@ import com.impactdryer.deviceapi.infrastructure.openapi.DevicesApiDelegate;
 import com.impactdryer.deviceapi.infrastructure.openapi.model.DeviceRegistrationRequest;
 import com.impactdryer.deviceapi.infrastructure.openapi.model.DeviceSummary;
 import com.impactdryer.deviceapi.infrastructure.openapi.model.DeviceType;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ class DevicesApiDelegateImplTest {
                 devicesApiDelegate.registerDevice(deviceRegistrationRequest);
         assertEquals(201, deviceSummaryResponseEntity.getStatusCodeValue());
         assertTrue(deviceSummaryResponseEntity.getHeaders().containsKey("Location"));
-        assertEquals("/devices/1", deviceSummaryResponseEntity.getHeaders().getFirst("Location"));
+        assertEquals("/devices/7b:12:d6:29:0b:ee", deviceSummaryResponseEntity.getHeaders().getFirst("Location"));
     }
 
     @Test
@@ -40,5 +41,26 @@ class DevicesApiDelegateImplTest {
         assertEquals(200, responseEntity.getStatusCodeValue());
         assertEquals(macAddress, responseEntity.getBody().getMacAddress());
         assertEquals(DeviceType.SWITCH, responseEntity.getBody().getDeviceType());
+    }
+
+    @Test
+    public void shouldListDevicesSortedAndMapped() {
+        Mockito.when(getDevicesHandler.getSortedDevices())
+                .thenReturn(List.of(
+                        new DeviceDTO("AA:BB:CC:DD:EE:01", "GATEWAY"),
+                        new DeviceDTO("AA:BB:CC:DD:EE:02", "SWITCH"),
+                        new DeviceDTO("AA:BB:CC:DD:EE:03", "ACCESS_POINT")));
+
+        ResponseEntity<List<DeviceSummary>> response = devicesApiDelegate.listDevices();
+        assertEquals(200, response.getStatusCodeValue());
+        List<DeviceSummary> body = response.getBody();
+        assertNotNull(body);
+        assertEquals(3, body.size());
+        assertEquals(DeviceType.GATEWAY, body.get(0).getDeviceType());
+        assertEquals("AA:BB:CC:DD:EE:01", body.get(0).getMacAddress());
+        assertEquals(DeviceType.SWITCH, body.get(1).getDeviceType());
+        assertEquals("AA:BB:CC:DD:EE:02", body.get(1).getMacAddress());
+        assertEquals(DeviceType.ACCESS_POINT, body.get(2).getDeviceType());
+        assertEquals("AA:BB:CC:DD:EE:03", body.get(2).getMacAddress());
     }
 }

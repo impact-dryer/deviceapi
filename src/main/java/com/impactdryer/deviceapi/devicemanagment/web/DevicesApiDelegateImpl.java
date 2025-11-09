@@ -32,7 +32,10 @@ class DevicesApiDelegateImpl implements DevicesApiDelegate {
 
     @Override
     public ResponseEntity<List<DeviceSummary>> listDevices() {
-        return DevicesApiDelegate.super.listDevices();
+        List<DeviceSummary> summaries = getDevicesHandler.getSortedDevices().stream()
+                .map(dto -> new DeviceSummary(DeviceType.fromValue(dto.getDeviceType()), dto.getMacAddress()))
+                .toList();
+        return ResponseEntity.ok(summaries);
     }
 
     @Override
