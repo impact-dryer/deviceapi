@@ -1,6 +1,10 @@
 package com.impactdryer.deviceapi.devicemanagment.web;
 
 import com.impactdryer.deviceapi.devicemanagment.application.*;
+import com.impactdryer.deviceapi.devicemanagment.application.commands.GetDeviceByMacCommand;
+import com.impactdryer.deviceapi.devicemanagment.application.commands.RegisterDeviceCommand;
+import com.impactdryer.deviceapi.devicemanagment.application.handlers.GetDevicesHandler;
+import com.impactdryer.deviceapi.devicemanagment.application.handlers.RegisterDeviceHandler;
 import com.impactdryer.deviceapi.infrastructure.openapi.DevicesApiDelegate;
 import com.impactdryer.deviceapi.infrastructure.openapi.model.DeviceRegistrationRequest;
 import com.impactdryer.deviceapi.infrastructure.openapi.model.DeviceSummary;

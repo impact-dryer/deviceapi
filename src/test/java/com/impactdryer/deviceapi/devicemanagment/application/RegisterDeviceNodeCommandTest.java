@@ -2,6 +2,7 @@ package com.impactdryer.deviceapi.devicemanagment.application;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.impactdryer.deviceapi.devicemanagment.application.commands.RegisterDeviceCommand;
 import org.junit.jupiter.api.Test;
 
 class RegisterDeviceNodeCommandTest {

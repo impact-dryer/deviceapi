@@ -2,6 +2,9 @@ package com.impactdryer.deviceapi.devicemanagment.application;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.impactdryer.deviceapi.devicemanagment.application.commands.RegisterDeviceCommand;
+import com.impactdryer.deviceapi.devicemanagment.application.handlers.RegisterDeviceHandler;
+import com.impactdryer.deviceapi.devicemanagment.application.handlers.impl.RegisterDeviceHandlerImpl;
 import com.impactdryer.deviceapi.devicemanagment.infrastructure.DeviceInfrastructureService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

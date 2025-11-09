@@ -1,10 +1,15 @@
-package com.impactdryer.deviceapi.devicemanagment.application;
+package com.impactdryer.deviceapi.devicemanagment.application.handlers.impl;
 
+import com.impactdryer.deviceapi.devicemanagment.application.DeviceDTO;
+import com.impactdryer.deviceapi.devicemanagment.application.commands.GetDeviceByMacCommand;
+import com.impactdryer.deviceapi.devicemanagment.application.handlers.GetDevicesHandler;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
 import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
 import com.impactdryer.deviceapi.devicemanagment.infrastructure.DeviceInfrastructureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -18,5 +23,10 @@ public class GetDevicesHandlerImpl implements GetDevicesHandler {
         return new DeviceDTO(
                 deviceByMac.getDeviceMacAddress().value(),
                 deviceByMac.getDeviceType().name());
+    }
+
+    @Override
+    public List<DeviceDTO> getSortedDevices() {
+        return List.of();
     }
 }

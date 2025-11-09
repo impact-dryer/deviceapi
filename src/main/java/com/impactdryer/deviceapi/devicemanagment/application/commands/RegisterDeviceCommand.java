@@ -1,4 +1,4 @@
-package com.impactdryer.deviceapi.devicemanagment.application;
+package com.impactdryer.deviceapi.devicemanagment.application.commands;
 
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;

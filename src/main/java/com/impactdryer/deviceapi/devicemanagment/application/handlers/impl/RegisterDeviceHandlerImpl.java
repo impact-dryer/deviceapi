@@ -1,5 +1,7 @@
-package com.impactdryer.deviceapi.devicemanagment.application;
+package com.impactdryer.deviceapi.devicemanagment.application.handlers.impl;
 
+import com.impactdryer.deviceapi.devicemanagment.application.commands.RegisterDeviceCommand;
+import com.impactdryer.deviceapi.devicemanagment.application.handlers.RegisterDeviceHandler;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceType;
 import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
