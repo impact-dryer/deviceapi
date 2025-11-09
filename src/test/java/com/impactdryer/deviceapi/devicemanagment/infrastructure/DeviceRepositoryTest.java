@@ -4,10 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceType;
 import jakarta.transaction.Transactional;
-
 import java.util.List;
 import java.util.Set;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

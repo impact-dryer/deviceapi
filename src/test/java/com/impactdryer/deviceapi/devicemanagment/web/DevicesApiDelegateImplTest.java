@@ -29,7 +29,9 @@ class DevicesApiDelegateImplTest {
                 devicesApiDelegate.registerDevice(deviceRegistrationRequest);
         assertEquals(201, deviceSummaryResponseEntity.getStatusCodeValue());
         assertTrue(deviceSummaryResponseEntity.getHeaders().containsKey("Location"));
-        assertEquals("/devices/7b:12:d6:29:0b:ee", deviceSummaryResponseEntity.getHeaders().getFirst("Location"));
+        assertEquals(
+                "/devices/7b:12:d6:29:0b:ee",
+                deviceSummaryResponseEntity.getHeaders().getFirst("Location"));
     }
 
     @Test
