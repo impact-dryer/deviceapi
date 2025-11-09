@@ -4,55 +4,54 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceType;
 import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
-import lombok.Getter;
-
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.Getter;
 
 @Getter
 public final class DeviceNode {
-  private final MacAddress macAddress;
-  private final DeviceType deviceType;
-  private final Set<DeviceNode> downlinks;
-  @JsonIgnore
-  private DeviceNode uplink;
+    private final MacAddress macAddress;
+    private final DeviceType deviceType;
+    private final Set<DeviceNode> downlinks;
 
-  public DeviceNode(MacAddress macAddress, DeviceType deviceType, DeviceNode uplink, Set<DeviceNode> downlinks) {
-    this.macAddress = macAddress;
-    this.deviceType = deviceType;
-    this.uplink = uplink;
-    this.downlinks = downlinks;
-  }
+    @JsonIgnore
+    private DeviceNode uplink;
 
-  @JsonCreator
-  public DeviceNode(MacAddress macAddress, DeviceType deviceType) {
-    this.macAddress = macAddress;
-    this.deviceType = deviceType;
-    this.uplink = null;
-    this.downlinks = new HashSet<>();
-  }
+    public DeviceNode(MacAddress macAddress, DeviceType deviceType, DeviceNode uplink, Set<DeviceNode> downlinks) {
+        this.macAddress = macAddress;
+        this.deviceType = deviceType;
+        this.uplink = uplink;
+        this.downlinks = downlinks;
+    }
 
-  public void addDownlink(DeviceNode downlink) {
-    this.downlinks.add(downlink);
-    downlink.uplink = this;
-  }
+    @JsonCreator
+    public DeviceNode(MacAddress macAddress, DeviceType deviceType) {
+        this.macAddress = macAddress;
+        this.deviceType = deviceType;
+        this.uplink = null;
+        this.downlinks = new HashSet<>();
+    }
 
-  public void setUplink(DeviceNode uplink) {
-    this.uplink = uplink;
-    uplink.addDownlink(this);
-  }
+    public void addDownlink(DeviceNode downlink) {
+        this.downlinks.add(downlink);
+        downlink.uplink = this;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass()) return false;
-    DeviceNode that = (DeviceNode) o;
-    return Objects.equals(macAddress, that.macAddress) && deviceType == that.deviceType;
-  }
+    public void setUplink(DeviceNode uplink) {
+        this.uplink = uplink;
+        uplink.addDownlink(this);
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(macAddress, deviceType);
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        DeviceNode that = (DeviceNode) o;
+        return Objects.equals(macAddress, that.macAddress) && deviceType == that.deviceType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(macAddress, deviceType);
+    }
 }

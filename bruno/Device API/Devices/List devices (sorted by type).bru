@@ -1,0 +1,59 @@
+meta {
+  name: List devices (sorted by type)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/devices
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~sort: 
+}
+
+example {
+  name: sorted
+  
+  request: {
+    url: {{baseUrl}}/devices
+    method: GET
+    mode: none
+    params:query: {
+      ~sort: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        [
+          {
+            "deviceType": "GATEWAY",
+            "macAddress": "AA:BB:CC:DD:EE:01"
+          },
+          {
+            "deviceType": "SWITCH",
+            "macAddress": "AA:BB:CC:DD:EE:02"
+          },
+          {
+            "deviceType": "ACCESS_POINT",
+            "macAddress": "AA:BB:CC:DD:EE:03"
+          }
+        ]
+      '''
+    }
+  }
+}

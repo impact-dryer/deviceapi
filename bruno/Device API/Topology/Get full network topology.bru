@@ -1,0 +1,58 @@
+meta {
+  name: Get full network topology
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/topology
+  body: none
+  auth: inherit
+}
+
+example {
+  name: full
+  
+  request: {
+    url: {{baseUrl}}/topology
+    method: GET
+    mode: none
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        [
+          {
+            "macAddress": "AA:BB:CC:DD:EE:01",
+            "children": [
+              {
+                "macAddress": "AA:BB:CC:DD:EE:02",
+                "children": [
+                  {
+                    "macAddress": "AA:BB:CC:DD:EE:03",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "macAddress": "AA:BB:CC:DD:EE:10",
+            "children": []
+          }
+        ]
+      '''
+    }
+  }
+}

@@ -1,62 +1,62 @@
 package com.impactdryer.deviceapi.devicemanagment.infrastructure;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceType;
 import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class DeviceNodeTest {
 
-  @Test
-  void testDeviceNodeCreation() {
-    MacAddress randomMacAddress = TestingUtils.getRandomMacAddress();
-    DeviceNode node = new DeviceNode(randomMacAddress, DeviceType.SWITCH);
-    assertNotNull(node);
-    assertEquals(DeviceType.SWITCH, node.getDeviceType());
-    assertEquals(randomMacAddress, node.getMacAddress());
-  }
+    @Test
+    void testDeviceNodeCreation() {
+        MacAddress randomMacAddress = TestingUtils.getRandomMacAddress();
+        DeviceNode node = new DeviceNode(randomMacAddress, DeviceType.SWITCH);
+        assertNotNull(node);
+        assertEquals(DeviceType.SWITCH, node.getDeviceType());
+        assertEquals(randomMacAddress, node.getMacAddress());
+    }
 
-  @Test
-  void testAddDownLink() {
-    MacAddress parentMac = TestingUtils.getRandomMacAddress();
-    DeviceNode parentNode = new DeviceNode(parentMac, DeviceType.GATEWAY);
+    @Test
+    void testAddDownLink() {
+        MacAddress parentMac = TestingUtils.getRandomMacAddress();
+        DeviceNode parentNode = new DeviceNode(parentMac, DeviceType.GATEWAY);
 
-    MacAddress childMac = TestingUtils.getRandomMacAddress();
-    DeviceNode childNode = new DeviceNode(childMac, DeviceType.SWITCH);
+        MacAddress childMac = TestingUtils.getRandomMacAddress();
+        DeviceNode childNode = new DeviceNode(childMac, DeviceType.SWITCH);
 
-    parentNode.addDownlink(childNode);
+        parentNode.addDownlink(childNode);
 
-    assertTrue(parentNode.getDownlinks().contains(childNode));
-    assertEquals(parentNode, childNode.getUplink());
-  }
+        assertTrue(parentNode.getDownlinks().contains(childNode));
+        assertEquals(parentNode, childNode.getUplink());
+    }
 
-  @Test
-  void testAddUpLink() {
-    MacAddress parentMac = TestingUtils.getRandomMacAddress();
-    DeviceNode parentNode = new DeviceNode(parentMac, DeviceType.GATEWAY);
+    @Test
+    void testAddUpLink() {
+        MacAddress parentMac = TestingUtils.getRandomMacAddress();
+        DeviceNode parentNode = new DeviceNode(parentMac, DeviceType.GATEWAY);
 
-    MacAddress childMac = TestingUtils.getRandomMacAddress();
-    DeviceNode childNode = new DeviceNode(childMac, DeviceType.SWITCH);
+        MacAddress childMac = TestingUtils.getRandomMacAddress();
+        DeviceNode childNode = new DeviceNode(childMac, DeviceType.SWITCH);
 
-    childNode.setUplink(parentNode);
+        childNode.setUplink(parentNode);
 
-    assertEquals(parentNode, childNode.getUplink());
-    assertTrue(parentNode.getDownlinks().contains(childNode));
-  }
+        assertEquals(parentNode, childNode.getUplink());
+        assertTrue(parentNode.getDownlinks().contains(childNode));
+    }
 
-  @Test
-  void testEqualsAndHashCode() {
-    MacAddress mac1 = TestingUtils.getRandomMacAddress();
-    MacAddress mac2 = TestingUtils.getRandomMacAddress();
+    @Test
+    void testEqualsAndHashCode() {
+        MacAddress mac1 = TestingUtils.getRandomMacAddress();
+        MacAddress mac2 = TestingUtils.getRandomMacAddress();
 
-    DeviceNode node1a = new DeviceNode(mac1, DeviceType.GATEWAY);
-    DeviceNode node1b = new DeviceNode(mac1, DeviceType.GATEWAY);
-    DeviceNode node2 = new DeviceNode(mac2, DeviceType.GATEWAY);
+        DeviceNode node1a = new DeviceNode(mac1, DeviceType.GATEWAY);
+        DeviceNode node1b = new DeviceNode(mac1, DeviceType.GATEWAY);
+        DeviceNode node2 = new DeviceNode(mac2, DeviceType.GATEWAY);
 
-    assertEquals(node1a, node1b);
-    assertNotEquals(node1a, node2);
-    assertEquals(node1a.hashCode(), node1b.hashCode());
-    assertNotEquals(node1a.hashCode(), node2.hashCode());
-  }
+        assertEquals(node1a, node1b);
+        assertNotEquals(node1a, node2);
+        assertEquals(node1a.hashCode(), node1b.hashCode());
+        assertNotEquals(node1a.hashCode(), node2.hashCode());
+    }
 }

@@ -1,0 +1,11 @@
+meta {
+  name: Get a device by MAC address
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/devices/54:6d:84:1b:2c:01
+  body: none
+  auth: inherit
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Register a device
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/devices
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "deviceType": "ACCESS_POINT",
+    "macAddress": "54:6d:84:1b:2c:01",
+    "uplinkMacAddress": "ef:a5:fc:9d:7d:2b"
+  }
+}

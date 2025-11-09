@@ -1,0 +1,22 @@
+package com.impactdryer.deviceapi.devicemanagment.application;
+
+import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
+import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
+import com.impactdryer.deviceapi.devicemanagment.infrastructure.DeviceInfrastructureService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class GetDevicesHandlerImpl implements GetDevicesHandler {
+    private final DeviceInfrastructureService deviceInfrastructureService;
+
+    @Override
+    public DeviceDTO handle(GetDeviceByMacCommand command) {
+        DeviceRegistration deviceByMac =
+                deviceInfrastructureService.getDeviceByMac(MacAddress.of(command.macAddress()));
+        return new DeviceDTO(
+                deviceByMac.getDeviceMacAddress().value(),
+                deviceByMac.getDeviceType().name());
+    }
+}

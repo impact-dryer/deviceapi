@@ -1,0 +1,15 @@
+meta {
+  name: Get topology subtree starting from a device
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/topology/:macAddress
+  body: none
+  auth: inherit
+}
+
+params:path {
+  macAddress: 
+}

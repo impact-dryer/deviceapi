@@ -5,8 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public record RegisterDeviceCommand(String deviceType, String macAddress, String uplinkMacAddress) {
 
-  public RegisterDeviceCommand {
-    Preconditions.checkArgument(StringUtils.isNotEmpty(deviceType), "Device type must not be empty");
-    Preconditions.checkArgument(StringUtils.isNotEmpty(macAddress), "MAC address must not be empty");
-  }
+    public RegisterDeviceCommand {
+        Preconditions.checkArgument(StringUtils.isNotEmpty(deviceType), "Device type must not be empty");
+        Preconditions.checkArgument(StringUtils.isNotEmpty(macAddress), "MAC address must not be empty");
+    }
 }
