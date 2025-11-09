@@ -1,9 +1,8 @@
-package com.impactdryer.deviceapi.devicemanagment.infrastructure;
+package com.impactdryer.deviceapi.devicemanagment.domain;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.impactdryer.deviceapi.devicemanagment.domain.DeviceType;
-import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
+import com.impactdryer.deviceapi.devicemanagment.infrastructure.TestingUtils;
 import org.junit.jupiter.api.Test;
 
 class DeviceNodeTest {

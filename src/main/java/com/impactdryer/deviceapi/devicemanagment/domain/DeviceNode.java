@@ -1,9 +1,7 @@
-package com.impactdryer.deviceapi.devicemanagment.infrastructure;
+package com.impactdryer.deviceapi.devicemanagment.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.impactdryer.deviceapi.devicemanagment.domain.DeviceType;
-import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
