@@ -51,20 +51,6 @@ public class DeviceEntity {
         this.deviceType = Objects.requireNonNull(deviceType, "deviceType must not be null");
     }
 
-    public static DeviceEntity withUplink(String macAddress, DeviceType deviceType, DeviceEntity uplink) {
-        DeviceEntity d = new DeviceEntity(macAddress, deviceType);
-        d.attachToUplink(uplink);
-        return d;
-    }
-
-    public void attachToUplink(DeviceEntity uplink) {
-        this.uplink = uplink;
-    }
-
-    public void detachUplink() {
-        this.uplink = null;
-    }
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

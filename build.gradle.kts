@@ -65,26 +65,28 @@ tasks.jacocoTestReport {
 
 tasks.withType<JacocoCoverageVerification> {
   dependsOn(tasks.test)
+  afterEvaluate {
+    classDirectories.setFrom(
+      files(
+        classDirectories.files
+          .map {
+            fileTree(it).apply {
+              exclude("/**/openapi")
+              exclude("/**/openapitools")
+            }
+          }
+          .toList()
+      )
+    )
+  }
   violationRules {
     rule {
       limit {
         counter = "LINE"
-        value = "COVEREDRATIO" // corrected from invalid COVERED_RATIO
-        minimum = 0.7.toBigDecimal()
+        value = "COVEREDRATIO"
+        minimum = 0.9.toBigDecimal()
       }
     }
-  }
-  afterEvaluate {
-    classDirectories.setFrom(
-      files(
-        classDirectories.files.map {
-          fileTree(it).apply {
-            exclude("/**/openapi")
-            exclude("org.openapitools")
-          }
-        }
-      )
-    )
   }
 }
 
@@ -92,12 +94,14 @@ tasks.withType<JacocoReport> {
   afterEvaluate {
     classDirectories.setFrom(
       files(
-        classDirectories.files.map {
-          fileTree(it).apply {
-            exclude("/**/openapi")
-            exclude("org.openapitools")
+        classDirectories.files
+          .map {
+            fileTree(it).apply {
+              exclude("/**/openapi")
+              exclude("/**/openapitools")
+            }
           }
-        }
+          .toList()
       )
     )
   }
@@ -107,6 +111,7 @@ spotless {
   lineEndings = com.diffplug.spotless.LineEnding.UNIX
   encoding("UTF-8")
   java {
+    target("src/*/java/**/*.java")
     importOrder()
     removeUnusedImports()
     trimTrailingWhitespace()
@@ -165,5 +170,7 @@ openApiGenerate {
 sourceSets { named("main") { java { srcDir("$buildDir/generated/src/main/java") } } }
 
 tasks.named("compileJava") { dependsOn("openApiGenerate") }
+
+tasks.named("spotlessJava") { dependsOn("openApiGenerate") }
 
 springBoot { mainClass.set("com.impactdryer.deviceapi.DeviceapiApplication") }

@@ -3,6 +3,7 @@ package com.impactdryer.deviceapi.devicemanagment.application.handlers;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.impactdryer.deviceapi.devicemanagment.application.DeviceDTO;
+import com.impactdryer.deviceapi.devicemanagment.application.commands.GetDeviceByMacCommand;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.impl.GetDevicesHandlerImpl;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceType;
@@ -34,5 +35,20 @@ class GetDevicesHandlerImplTest {
         List<DeviceDTO> result = handler.getSortedDevices();
 
         assertEquals(3, result.size());
+    }
+
+    @Test
+    void shouldReturnDeviceByMac() {
+        // Given
+        MacAddress mac = TestingUtils.getRandomMacAddress();
+        DeviceRegistration registration = new DeviceRegistration(mac, DeviceType.SWITCH);
+        Mockito.when(infrastructureService.getDeviceByMac(mac)).thenReturn(registration);
+
+        // When
+        DeviceDTO result = handler.handle(new GetDeviceByMacCommand(mac.value()));
+
+        // Then
+        assertEquals(mac.value(), result.getMacAddress());
+        assertEquals(DeviceType.SWITCH.name(), result.getDeviceType());
     }
 }

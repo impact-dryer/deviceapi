@@ -14,5 +14,7 @@ public interface DeviceInfrastructureService {
 
     DeviceNode getTreeRoot();
 
+    DeviceNode getTreeRootedAt(MacAddress macAddress);
+
     List<DeviceRegistration> getAllDevicesSortedByType();
 }

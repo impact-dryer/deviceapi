@@ -6,6 +6,7 @@ import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,19 @@ public class DeviceInfrastructureServiceImpl implements DeviceInfrastructureServ
         parentNode.addDownlink(currentNode);
     }
 
+    private static void addAllLinks(List<DeviceEntity> allRecursive, Map<String, DeviceNode> nodeMap) {
+        for (int i = 0; i < allRecursive.size(); i++) {
+            DeviceEntity deviceEntity = allRecursive.get(i);
+            if (deviceEntity.getUplink() != null) {
+                setUpLink(nodeMap, deviceEntity);
+            }
+        }
+    }
+
+    private static Predicate<DeviceEntity> hasNoUpliksPredicate() {
+        return deviceEntity -> deviceEntity.getUplink() == null;
+    }
+
     @Transactional
     @Override
     public Long registerDevice(DeviceRegistration deviceRegistration) {
@@ -52,21 +66,33 @@ public class DeviceInfrastructureServiceImpl implements DeviceInfrastructureServ
                 .collect(Collectors.toMap(
                         DeviceEntity::getMacAddress,
                         v -> new DeviceNode(MacAddress.of(v.getMacAddress()), v.getDeviceType())));
-        DeviceNode root = null;
-        for (int i = 0; i < allRecursive.size(); i++) {
-            DeviceEntity deviceEntity = allRecursive.get(i);
-            if (deviceEntity.getUplink() != null) {
-                setUpLink(nodeMap, deviceEntity);
-            } else {
-                if (root != null) {
+
+        DeviceNode root = allRecursive.stream()
+                .filter(hasNoUpliksPredicate())
+                .map(deviceEntity -> nodeMap.get(deviceEntity.getMacAddress()))
+                .reduce((a, b) -> {
                     throw new MultipleRootDevicesFoundException();
-                }
-                root = nodeMap.get(deviceEntity.getMacAddress());
-            }
-        }
+                })
+                .orElseThrow(NoRootDeviceFoundException::new);
+
+        addAllLinks(allRecursive, nodeMap);
+        return root;
+    }
+
+    @Override
+    public DeviceNode getTreeRootedAt(MacAddress macAddress) {
+        List<DeviceEntity> allRecursive = this.deviceRepository.findAllRecursive();
+        Map<String, DeviceNode> nodeMap = allRecursive.stream()
+                .collect(Collectors.toMap(
+                        DeviceEntity::getMacAddress,
+                        v -> new DeviceNode(MacAddress.of(v.getMacAddress()), v.getDeviceType())));
+
+        DeviceNode root = nodeMap.get(macAddress.value());
         if (root == null) {
-            throw new NoRootDeviceFoundException();
+            throw new DeviceNotFound(macAddress);
         }
+
+        addAllLinks(allRecursive, nodeMap);
         return root;
     }
 

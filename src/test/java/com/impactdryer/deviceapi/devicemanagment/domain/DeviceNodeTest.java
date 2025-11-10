@@ -58,4 +58,27 @@ class DeviceNodeTest {
         assertEquals(node1a.hashCode(), node1b.hashCode());
         assertNotEquals(node1a.hashCode(), node2.hashCode());
     }
+
+    @Test
+    void testEquals() {
+        MacAddress mac1 = TestingUtils.getRandomMacAddress();
+        MacAddress mac2 = TestingUtils.getRandomMacAddress();
+
+        DeviceNode node1 = new DeviceNode(mac1, DeviceType.GATEWAY);
+        DeviceNode node2 = new DeviceNode(mac1, DeviceType.GATEWAY);
+        DeviceNode node3 = new DeviceNode(mac2, DeviceType.SWITCH);
+
+        assertEquals(node1, node2);
+        assertNotEquals(node1, node3);
+    }
+
+    @Test
+    void testHashCode() {
+        MacAddress mac1 = TestingUtils.getRandomMacAddress();
+
+        DeviceNode node1 = new DeviceNode(mac1, DeviceType.GATEWAY);
+        DeviceNode node2 = new DeviceNode(mac1, DeviceType.GATEWAY);
+
+        assertEquals(node1.hashCode(), node2.hashCode());
+    }
 }

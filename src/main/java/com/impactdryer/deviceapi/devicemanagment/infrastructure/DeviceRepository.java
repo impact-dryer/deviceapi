@@ -17,33 +17,79 @@ public interface DeviceRepository extends JpaRepository<DeviceEntity, Long> {
     List<DeviceEntity> findAllSortedByType();
 
     @Query(value = """
-            WITH RECURSIVE devices_tree (
-                                         id,
-                                         device_type,
-                                         mac_address,
-                                         uplink_id
-
-                ) AS (
+            WITH RECURSIVE devices_tree AS (
+                -- Base: Start from roots
                 SELECT
                     id,
                     device_type,
                     mac_address,
                     uplink_id,
-                    version
+                    version,
+                    ARRAY[id] as path  -- Track the path to detect duplicates
                 FROM devices
-                WHERE uplink_id IS NOT NULL
-                UNION
+                WHERE uplink_id IS NULL
+
+                UNION ALL
+
+                -- Recursive: Find children
                 SELECT
                     d.id,
                     d.device_type,
                     d.mac_address,
                     d.uplink_id,
-                    d.version
+                    d.version,
+                    dt.path || d.id
                 FROM devices d
-                         INNER JOIN devices_tree sub ON sub.uplink_id = d.id
+                         INNER JOIN devices_tree dt ON d.uplink_id = dt.id
+                WHERE NOT d.id = ANY(dt.path)
             )
-            SELECT *
-            FROM devices_tree order by uplink_id desc;
+            SELECT
+                id,
+                device_type,
+                mac_address,
+                uplink_id,
+                version
+            FROM devices_tree
+            ORDER BY path;
             """, nativeQuery = true)
     List<DeviceEntity> findAllRecursive();
+
+    @Query(value = """
+
+                    WITH RECURSIVE devices_tree AS (
+                -- Base: Start from roots
+                SELECT
+                    id,
+                    device_type,
+                    mac_address,
+                    uplink_id,
+                    version,
+                    ARRAY[id] as path  -- Track the path to detect duplicates
+                FROM devices
+                WHERE mac_address = :macAddress
+
+                UNION ALL
+
+                -- Recursive: Find children
+                SELECT
+                    d.id,
+                    d.device_type,
+                    d.mac_address,
+                    d.uplink_id,
+                    d.version,
+                    dt.path || d.id
+                FROM devices d
+                         INNER JOIN devices_tree dt ON d.uplink_id = dt.id
+                WHERE NOT d.id = ANY(dt.path)
+            )
+            SELECT
+                id,
+                device_type,
+                mac_address,
+                uplink_id,
+                version
+            FROM devices_tree
+            ORDER BY path;
+            """, nativeQuery = true)
+    List<DeviceEntity> findAllFromDevice(String macAddress);
 }

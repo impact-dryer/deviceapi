@@ -20,7 +20,7 @@ class DevicesApiDelegateImplTest {
     DevicesApiDelegate devicesApiDelegate = new DevicesApiDelegateImpl(registerDeviceHandler, getDevicesHandler);
 
     @Test
-    public void shouldAddLocationHeaderWhenCreatingDevice() {
+    void shouldAddLocationHeaderWhenCreatingDevice() {
         DeviceRegistrationRequest deviceRegistrationRequest = new DeviceRegistrationRequest();
         deviceRegistrationRequest.deviceType(DeviceType.SWITCH);
         deviceRegistrationRequest.macAddress("7b:12:d6:29:0b:ee");
@@ -35,7 +35,7 @@ class DevicesApiDelegateImplTest {
     }
 
     @Test
-    public void shouldReturnDeviceWhenFound() {
+    void shouldReturnDeviceWhenFound() {
         String macAddress = "7b:12:d6:29:0b:ee";
         Mockito.when(getDevicesHandler.handle(Mockito.any()))
                 .thenReturn(new DeviceDTO(macAddress, DeviceType.SWITCH.getValue()));
@@ -46,7 +46,7 @@ class DevicesApiDelegateImplTest {
     }
 
     @Test
-    public void shouldListDevicesSortedAndMapped() {
+    void shouldListDevicesSortedAndMapped() {
         Mockito.when(getDevicesHandler.getSortedDevices())
                 .thenReturn(List.of(
                         new DeviceDTO("AA:BB:CC:DD:EE:01", "GATEWAY"),

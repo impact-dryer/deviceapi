@@ -39,7 +39,7 @@ class DeviceInfrastructureServiceTest {
     }
 
     @Test
-    void testSaveDeviceWithoutUpLink() {
+    void shouldSaveDeviceWithoutUpLink() {
         ArgumentCaptor<DeviceEntity> argumentCaptor = ArgumentCaptor.forClass(DeviceEntity.class);
         DeviceRegistration deviceRegistration =
                 new DeviceRegistration(TestingUtils.getRandomMacAddress(), DeviceType.SWITCH);
@@ -56,7 +56,7 @@ class DeviceInfrastructureServiceTest {
     }
 
     @Test
-    void testSaveDeviceWithUpLink() {
+    void shouldSaveDeviceWithUpLink() {
         ArgumentCaptor<DeviceEntity> argumentCaptor = ArgumentCaptor.forClass(DeviceEntity.class);
         MacAddress uplinkMac = TestingUtils.getRandomMacAddress();
         DeviceRegistration deviceRegistration =
@@ -80,7 +80,7 @@ class DeviceInfrastructureServiceTest {
     }
 
     @Test
-    void testSaveDeviceWithNonExistingUpLink() {
+    void shouldSaveDeviceWithNonExistingUpLink() {
         MacAddress uplinkMac = TestingUtils.getRandomMacAddress();
         DeviceRegistration deviceRegistration =
                 new DeviceRegistration(TestingUtils.getRandomMacAddress(), DeviceType.GATEWAY, uplinkMac);
@@ -92,7 +92,7 @@ class DeviceInfrastructureServiceTest {
     }
 
     @Test
-    void testGetDeviceByMac() {
+    void shouldGetDeviceByMac() {
         MacAddress deviceMac = TestingUtils.getRandomMacAddress();
         DeviceEntity deviceEntity = new DeviceEntity();
         deviceEntity.setMacAddress(deviceMac.value());
@@ -107,14 +107,14 @@ class DeviceInfrastructureServiceTest {
     }
 
     @Test
-    void returnsNullWhenNoDevices() {
+    void shouldReturnNullWhenNoDevices() {
         when(deviceRepository.findAllRecursive()).thenReturn(List.of());
 
         Assertions.assertThrows(NoRootDeviceFoundException.class, () -> deviceInfrastructureService.getTreeRoot());
     }
 
     @Test
-    void buildsSingleNodeTopology() {
+    void shouldBuildSingleNodeTopology() {
         DeviceEntity rootEntity = device("AA:AA:AA:AA:AA:AA", DeviceType.GATEWAY, null);
 
         when(deviceRepository.findAllRecursive()).thenReturn(List.of(rootEntity));
@@ -129,7 +129,7 @@ class DeviceInfrastructureServiceTest {
     }
 
     @Test
-    void buildsMultiLevelTopologyRegardlessOfInputOrder() {
+    void shouldBuildMultiLevelTopologyRegardlessOfInputOrder() {
         // Topology:
         // R
         // ├─ A
@@ -177,7 +177,7 @@ class DeviceInfrastructureServiceTest {
     }
 
     @Test
-    void buildsWideTopologyThreeChildren() {
+    void shouldBuildWideTopologyThreeChildren() {
         DeviceEntity R = device("00:00:00:00:10:00", DeviceType.GATEWAY, null);
         DeviceEntity C1 = device("00:00:00:00:10:01", DeviceType.SWITCH, R);
         DeviceEntity C2 = device("00:00:00:00:10:02", DeviceType.SWITCH, R);
@@ -195,7 +195,7 @@ class DeviceInfrastructureServiceTest {
     }
 
     @Test
-    void buildsDeepChainTopologyFiveLevels() {
+    void shouldBuildDeepChainTopologyFiveLevels() {
         DeviceEntity R = device("00:00:00:00:20:00", DeviceType.GATEWAY, null);
         DeviceEntity A = device("00:00:00:00:20:01", DeviceType.SWITCH, R);
         DeviceEntity B = device("00:00:00:00:20:02", DeviceType.SWITCH, A);
@@ -220,7 +220,7 @@ class DeviceInfrastructureServiceTest {
     }
 
     @Test
-    void throwsWhenNoRootDueToCycle() {
+    void shouldThrowWhenNoRootDueToCycle() {
         // A <-> B cycle (no node with null uplink)
         DeviceEntity A = device("00:00:00:00:30:01", DeviceType.SWITCH, null);
         DeviceEntity B = device("00:00:00:00:30:02", DeviceType.SWITCH, null);
@@ -242,5 +242,56 @@ class DeviceInfrastructureServiceTest {
         Mockito.when(deviceRepository.findAllRecursive()).thenReturn(List.of(gateway1, gateway2));
 
         assertThrows(MultipleRootDevicesFoundException.class, () -> deviceInfrastructureService.getTreeRoot());
+    }
+
+    @Test
+    void shouldGetSubtreeRootedAtGivenMacAddress() {
+        // Topology:
+        // R
+        // ├─ A
+        // │  └─ A1
+        // └─ B
+        //    └─ B1
+        DeviceEntity R = device("00:00:00:00:00:01", DeviceType.GATEWAY, null);
+        DeviceEntity A = device("00:00:00:00:00:02", DeviceType.SWITCH, R);
+        DeviceEntity B = device("00:00:00:00:00:03", DeviceType.SWITCH, R);
+        DeviceEntity A1 = device("00:00:00:00:00:04", DeviceType.ACCESS_POINT, A);
+        DeviceEntity B1 = device("00:00:00:00:00:05", DeviceType.ACCESS_POINT, B);
+
+        when(deviceRepository.findAllRecursive()).thenReturn(List.of(B1, A, R, A1, B));
+
+        DeviceNode subtreeRoot = deviceInfrastructureService.getTreeRootedAt(MacAddress.of("00:00:00:00:00:02"));
+
+        assertNotNull(subtreeRoot);
+        assertEquals("00:00:00:00:00:02", subtreeRoot.getMacAddress().value());
+        // Subtree root children should be A1
+        Set<String> rootChildren = subtreeRoot.getDownlinks().stream()
+                .map(n -> n.getMacAddress().value())
+                .collect(java.util.stream.Collectors.toSet());
+        assertEquals(Set.of("00:00:00:00:00:04"), rootChildren);
+    }
+
+    @Test
+    void shouldThrowWhenGettingSubtreeForNonExistingMacAddress() {
+        when(deviceRepository.findAllFromDevice(Mockito.any())).thenReturn(List.of());
+        assertThrows(
+                DeviceNotFound.class,
+                () -> deviceInfrastructureService.getTreeRootedAt(MacAddress.of("00:00:00:00:00:FF")));
+    }
+
+    @Test
+    void shouldGetAllDevicesSortedByType() {
+        DeviceEntity device1 = device("00:00:00:00:40:01", DeviceType.SWITCH, null);
+        DeviceEntity device2 = device("00:00:00:00:40:02", DeviceType.GATEWAY, null);
+        DeviceEntity device3 = device("00:00:00:00:40:03", DeviceType.ACCESS_POINT, null);
+
+        when(deviceRepository.findAllSortedByType()).thenReturn(List.of(device2, device1, device3));
+
+        List<DeviceRegistration> sortedDevices = deviceInfrastructureService.getAllDevicesSortedByType();
+
+        assertEquals(3, sortedDevices.size());
+        assertEquals(DeviceType.GATEWAY, sortedDevices.get(0).getDeviceType());
+        assertEquals(DeviceType.SWITCH, sortedDevices.get(1).getDeviceType());
+        assertEquals(DeviceType.ACCESS_POINT, sortedDevices.get(2).getDeviceType());
     }
 }

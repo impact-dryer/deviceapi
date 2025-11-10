@@ -27,6 +27,14 @@ class DeviceRepositoryTest extends AbstractPostgresContainerTest {
         return deviceEntity;
     }
 
+    private static @NotNull DeviceEntity getDeviceEntity(DeviceType accessPoint, DeviceEntity switch1) {
+        DeviceEntity ap1 = new DeviceEntity();
+        ap1.setMacAddress(TestingUtils.getRandomMacAddress().value());
+        ap1.setDeviceType(accessPoint);
+        ap1.setUplink(switch1);
+        return ap1;
+    }
+
     @BeforeEach
     void setup() {
         deviceRepository.deleteAll();
@@ -58,5 +66,51 @@ class DeviceRepositoryTest extends AbstractPostgresContainerTest {
         assertEquals(DeviceType.GATEWAY, sorted.get(0).getDeviceType());
         assertEquals(DeviceType.SWITCH, sorted.get(1).getDeviceType());
         assertEquals(DeviceType.ACCESS_POINT, sorted.get(2).getDeviceType());
+    }
+
+    @Test
+    void testFindAllRecursive() {
+        DeviceEntity gateway = new DeviceEntity();
+        gateway.setMacAddress(TestingUtils.getRandomMacAddress().value());
+        gateway.setDeviceType(DeviceType.GATEWAY);
+        deviceRepository.save(gateway);
+
+        DeviceEntity switch1 = getDeviceEntity(DeviceType.SWITCH, gateway);
+        deviceRepository.save(switch1);
+
+        DeviceEntity ap1 = getDeviceEntity(DeviceType.ACCESS_POINT, switch1);
+        deviceRepository.save(ap1);
+
+        DeviceEntity switch2 = getDeviceEntity(DeviceType.SWITCH, gateway);
+        deviceRepository.save(switch2);
+
+        List<DeviceEntity> allRecursive = deviceRepository.findAllRecursive();
+        assertEquals(4, allRecursive.size());
+        assertEquals(gateway.getMacAddress(), allRecursive.get(0).getMacAddress());
+        assertEquals(switch1.getMacAddress(), allRecursive.get(1).getMacAddress());
+        assertEquals(ap1.getMacAddress(), allRecursive.get(2).getMacAddress());
+        assertEquals(switch2.getMacAddress(), allRecursive.get(3).getMacAddress());
+    }
+
+    @Test
+    void testFindAllRecursiveFromMacAddress() {
+        DeviceEntity gateway = new DeviceEntity();
+        gateway.setMacAddress(TestingUtils.getRandomMacAddress().value());
+        gateway.setDeviceType(DeviceType.GATEWAY);
+        deviceRepository.save(gateway);
+
+        DeviceEntity switch1 = getDeviceEntity(DeviceType.SWITCH, gateway);
+        deviceRepository.save(switch1);
+
+        DeviceEntity ap1 = getDeviceEntity(DeviceType.ACCESS_POINT, switch1);
+        deviceRepository.save(ap1);
+
+        DeviceEntity switch2 = getDeviceEntity(DeviceType.SWITCH, gateway);
+        deviceRepository.save(switch2);
+
+        List<DeviceEntity> allRecursive = deviceRepository.findAllFromDevice(switch1.getMacAddress());
+        assertEquals(2, allRecursive.size());
+        assertEquals(switch1.getMacAddress(), allRecursive.get(0).getMacAddress());
+        assertEquals(ap1.getMacAddress(), allRecursive.get(1).getMacAddress());
     }
 }

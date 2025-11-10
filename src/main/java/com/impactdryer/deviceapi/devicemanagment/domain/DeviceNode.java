@@ -16,13 +16,6 @@ public final class DeviceNode {
     @JsonIgnore
     private DeviceNode uplink;
 
-    public DeviceNode(MacAddress macAddress, DeviceType deviceType, DeviceNode uplink, Set<DeviceNode> downlinks) {
-        this.macAddress = macAddress;
-        this.deviceType = deviceType;
-        this.uplink = uplink;
-        this.downlinks = downlinks;
-    }
-
     @JsonCreator
     public DeviceNode(MacAddress macAddress, DeviceType deviceType) {
         this.macAddress = macAddress;
