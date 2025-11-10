@@ -3,8 +3,8 @@ package com.impactdryer.deviceapi.devicemanagment.application.handlers;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.impactdryer.deviceapi.devicemanagment.application.DeviceDTO;
-import com.impactdryer.deviceapi.devicemanagment.application.query.GetDeviceByMacQuery;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.impl.GetDevicesHandlerImpl;
+import com.impactdryer.deviceapi.devicemanagment.application.query.GetDeviceByMacQuery;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceType;
 import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;

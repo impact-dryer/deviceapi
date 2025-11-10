@@ -1,8 +1,8 @@
 package com.impactdryer.deviceapi.devicemanagment.application.handlers.impl;
 
 import com.impactdryer.deviceapi.devicemanagment.application.DeviceDTO;
-import com.impactdryer.deviceapi.devicemanagment.application.query.GetDeviceByMacQuery;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.GetDevicesHandler;
+import com.impactdryer.deviceapi.devicemanagment.application.query.GetDeviceByMacQuery;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
 import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
 import com.impactdryer.deviceapi.devicemanagment.infrastructure.DeviceInfrastructureService;
