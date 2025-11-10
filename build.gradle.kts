@@ -174,3 +174,5 @@ tasks.named("compileJava") { dependsOn("openApiGenerate") }
 tasks.named("spotlessJava") { dependsOn("openApiGenerate") }
 
 springBoot { mainClass.set("com.impactdryer.deviceapi.DeviceapiApplication") }
+
+tasks.getByName<Jar>("jar") { enabled = false }
