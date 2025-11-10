@@ -18,7 +18,6 @@ public interface DeviceRepository extends JpaRepository<DeviceEntity, Long> {
 
     @Query(value = """
             WITH RECURSIVE devices_tree AS (
-                -- Base: Start from roots
                 SELECT
                     id,
                     device_type,
@@ -31,7 +30,6 @@ public interface DeviceRepository extends JpaRepository<DeviceEntity, Long> {
 
                 UNION ALL
 
-                -- Recursive: Find children
                 SELECT
                     d.id,
                     d.device_type,
@@ -57,7 +55,6 @@ public interface DeviceRepository extends JpaRepository<DeviceEntity, Long> {
     @Query(value = """
 
                     WITH RECURSIVE devices_tree AS (
-                -- Base: Start from roots
                 SELECT
                     id,
                     device_type,
@@ -70,7 +67,6 @@ public interface DeviceRepository extends JpaRepository<DeviceEntity, Long> {
 
                 UNION ALL
 
-                -- Recursive: Find children
                 SELECT
                     d.id,
                     d.device_type,

@@ -1,7 +1,5 @@
 package com.impactdryer.deviceapi.devicemanagment.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -13,10 +11,8 @@ public final class DeviceNode {
     private final DeviceType deviceType;
     private final Set<DeviceNode> downlinks;
 
-    @JsonIgnore
     private DeviceNode uplink;
 
-    @JsonCreator
     public DeviceNode(MacAddress macAddress, DeviceType deviceType) {
         this.macAddress = macAddress;
         this.deviceType = deviceType;
