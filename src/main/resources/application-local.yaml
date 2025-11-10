@@ -4,15 +4,18 @@ spring:
     name: "deviceapi"
   jpa:
     hibernate:
-      ddl-auto: "update"
+      ddl-auto: "validate"
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: "org.hibernate.dialect.PostgreSQLDialect"
   datasource:
     driverClassName: "org.postgresql.Driver"
     url: "jdbc:postgresql://localhost:5432/deviceapi"
     username: "username"
     password: "password"
-    jpa:
-      show-sql: true
-      properties:
-        hibernate:
-          format_sql: true
-          dialect: "org.hibernate.dialect.PostgreSQLDialect"
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    clean-disabled: false
