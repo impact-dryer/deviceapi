@@ -1,7 +1,7 @@
 package com.impactdryer.deviceapi.devicemanagment.application.handlers.impl;
 
 import com.impactdryer.deviceapi.devicemanagment.application.DeviceDTO;
-import com.impactdryer.deviceapi.devicemanagment.application.commands.GetDeviceByMacCommand;
+import com.impactdryer.deviceapi.devicemanagment.application.query.GetDeviceByMacQuery;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.GetDevicesHandler;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
 import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
@@ -16,7 +16,7 @@ public class GetDevicesHandlerImpl implements GetDevicesHandler {
     private final DeviceInfrastructureService deviceInfrastructureService;
 
     @Override
-    public DeviceDTO handle(GetDeviceByMacCommand command) {
+    public DeviceDTO handle(GetDeviceByMacQuery command) {
         DeviceRegistration deviceByMac =
                 deviceInfrastructureService.getDeviceByMac(MacAddress.of(command.macAddress()));
         return new DeviceDTO(

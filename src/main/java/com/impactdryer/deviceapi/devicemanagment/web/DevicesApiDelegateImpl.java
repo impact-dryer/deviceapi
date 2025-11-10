@@ -1,7 +1,7 @@
 package com.impactdryer.deviceapi.devicemanagment.web;
 
 import com.impactdryer.deviceapi.devicemanagment.application.*;
-import com.impactdryer.deviceapi.devicemanagment.application.commands.GetDeviceByMacCommand;
+import com.impactdryer.deviceapi.devicemanagment.application.query.GetDeviceByMacQuery;
 import com.impactdryer.deviceapi.devicemanagment.application.commands.RegisterDeviceCommand;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.GetDevicesHandler;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.RegisterDeviceHandler;
@@ -25,7 +25,7 @@ class DevicesApiDelegateImpl implements DevicesApiDelegate {
 
     @Override
     public ResponseEntity<DeviceSummary> getDeviceByMac(String macAddress) {
-        DeviceDTO handle = getDevicesHandler.handle(new GetDeviceByMacCommand(macAddress));
+        DeviceDTO handle = getDevicesHandler.handle(new GetDeviceByMacQuery(macAddress));
         return ResponseEntity.ok(
                 new DeviceSummary(DeviceType.fromValue(handle.getDeviceType()), handle.getMacAddress()));
     }

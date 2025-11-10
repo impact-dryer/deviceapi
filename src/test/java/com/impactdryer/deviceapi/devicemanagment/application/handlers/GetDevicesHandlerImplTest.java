@@ -3,7 +3,7 @@ package com.impactdryer.deviceapi.devicemanagment.application.handlers;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.impactdryer.deviceapi.devicemanagment.application.DeviceDTO;
-import com.impactdryer.deviceapi.devicemanagment.application.commands.GetDeviceByMacCommand;
+import com.impactdryer.deviceapi.devicemanagment.application.query.GetDeviceByMacQuery;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.impl.GetDevicesHandlerImpl;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
 import com.impactdryer.deviceapi.devicemanagment.domain.DeviceType;
@@ -45,7 +45,7 @@ class GetDevicesHandlerImplTest {
         Mockito.when(infrastructureService.getDeviceByMac(mac)).thenReturn(registration);
 
         // When
-        DeviceDTO result = handler.handle(new GetDeviceByMacCommand(mac.value()));
+        DeviceDTO result = handler.handle(new GetDeviceByMacQuery(mac.value()));
 
         // Then
         assertEquals(mac.value(), result.getMacAddress());
