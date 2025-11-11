@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.impactdryer.deviceapi.devicemanagment.application.DeviceDTO;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.GetDevicesHandler;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.RegisterDeviceHandler;
+import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
+import com.impactdryer.deviceapi.devicemanagment.domain.MacAddress;
 import com.impactdryer.deviceapi.infrastructure.openapi.DevicesApiDelegate;
 import com.impactdryer.deviceapi.infrastructure.openapi.model.DeviceRegistrationRequest;
 import com.impactdryer.deviceapi.infrastructure.openapi.model.DeviceSummary;
@@ -23,14 +25,17 @@ class DevicesApiDelegateImplTest {
     void shouldAddLocationHeaderWhenCreatingDevice() {
         DeviceRegistrationRequest deviceRegistrationRequest = new DeviceRegistrationRequest();
         deviceRegistrationRequest.deviceType(DeviceType.SWITCH);
-        deviceRegistrationRequest.macAddress("7b:12:d6:29:0b:ee");
-        Mockito.when(registerDeviceHandler.registerDevice(Mockito.any())).thenReturn(1L);
+        String macAddress = "7b:12:d6:29:0b:ee";
+        deviceRegistrationRequest.macAddress(macAddress);
+        Mockito.when(registerDeviceHandler.registerDevice(Mockito.any()))
+                .thenReturn(new DeviceRegistration(
+                        MacAddress.of(macAddress), com.impactdryer.deviceapi.devicemanagment.domain.DeviceType.SWITCH));
         ResponseEntity<DeviceSummary> deviceSummaryResponseEntity =
                 devicesApiDelegate.registerDevice(deviceRegistrationRequest);
         assertEquals(201, deviceSummaryResponseEntity.getStatusCodeValue());
         assertTrue(deviceSummaryResponseEntity.getHeaders().containsKey("Location"));
         assertEquals(
-                "/devices/7b:12:d6:29:0b:ee",
+                "/devices/" + "7b:12:d6:29:0b:ee".toUpperCase(),
                 deviceSummaryResponseEntity.getHeaders().getFirst("Location"));
     }
 

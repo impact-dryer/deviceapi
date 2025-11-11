@@ -17,7 +17,7 @@ public class RegisterDeviceHandlerImpl implements RegisterDeviceHandler {
     private final DeviceInfrastructureService deviceInfrastructureService;
 
     @Override
-    public Long registerDevice(RegisterDeviceCommand command) {
+    public DeviceRegistration registerDevice(RegisterDeviceCommand command) {
         log.info("Registering device with MAC address: {}", command.macAddress());
         DeviceRegistration deviceRegistration;
 
@@ -30,7 +30,7 @@ public class RegisterDeviceHandlerImpl implements RegisterDeviceHandler {
                     DeviceType.valueOf(command.deviceType()),
                     MacAddress.of(command.uplinkMacAddress()));
         }
-
-        return deviceInfrastructureService.registerDevice(deviceRegistration);
+        deviceInfrastructureService.registerDevice(deviceRegistration);
+        return deviceRegistration;
     }
 }

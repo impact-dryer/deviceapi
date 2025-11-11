@@ -27,4 +27,11 @@ class MacAddressTest {
     void testEmptyMacAddress() {
         assertThrows(InvalidMacAddressException.class, () -> new MacAddress(""));
     }
+
+    @Test
+    void testMacAddressCaseInsensitivity() {
+        String mixedCaseMac = "00:1a:2B:3c:4D:5e";
+        MacAddress macAddress = new MacAddress(mixedCaseMac);
+        assertEquals("00:1A:2B:3C:4D:5E", macAddress.value());
+    }
 }

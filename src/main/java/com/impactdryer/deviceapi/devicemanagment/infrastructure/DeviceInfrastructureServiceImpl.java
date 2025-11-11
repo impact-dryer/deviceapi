@@ -9,8 +9,11 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeviceInfrastructureServiceImpl implements DeviceInfrastructureService {
@@ -56,7 +59,7 @@ public class DeviceInfrastructureServiceImpl implements DeviceInfrastructureServ
         return deviceRepository
                 .findByMacAddress(mac.value())
                 .map(DeviceInfrastructureServiceImpl::getDeviceRegistration)
-                .orElseThrow(() -> new DeviceNotFound(mac));
+                .orElseThrow(() -> new DeviceNotFoundException(mac));
     }
 
     @Override
@@ -89,7 +92,7 @@ public class DeviceInfrastructureServiceImpl implements DeviceInfrastructureServ
 
         DeviceNode root = nodeMap.get(macAddress.value());
         if (root == null) {
-            throw new DeviceNotFound(macAddress);
+            throw new DeviceNotFoundException(macAddress);
         }
 
         addAllLinks(allRecursive, nodeMap);
@@ -113,6 +116,11 @@ public class DeviceInfrastructureServiceImpl implements DeviceInfrastructureServ
                     .orElseThrow(() -> new NoUplinkFoundException(deviceRegistration.getUplinkMacAddress()));
             deviceEntity.setUplink(uplinkEntity);
         }
-        return deviceRepository.save(deviceEntity);
+        try {
+            return deviceRepository.save(deviceEntity);
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            log.error(dataIntegrityViolationException.getMessage());
+            throw new DeviceAlreadyRegisteredException(deviceRegistration.getDeviceMacAddress());
+        }
     }
 }

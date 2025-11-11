@@ -5,6 +5,7 @@ import com.impactdryer.deviceapi.devicemanagment.application.commands.RegisterDe
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.GetDevicesHandler;
 import com.impactdryer.deviceapi.devicemanagment.application.handlers.RegisterDeviceHandler;
 import com.impactdryer.deviceapi.devicemanagment.application.query.GetDeviceByMacQuery;
+import com.impactdryer.deviceapi.devicemanagment.domain.DeviceRegistration;
 import com.impactdryer.deviceapi.infrastructure.openapi.DevicesApiDelegate;
 import com.impactdryer.deviceapi.infrastructure.openapi.model.DeviceRegistrationRequest;
 import com.impactdryer.deviceapi.infrastructure.openapi.model.DeviceSummary;
@@ -40,12 +41,14 @@ class DevicesApiDelegateImpl implements DevicesApiDelegate {
 
     @Override
     public ResponseEntity<DeviceSummary> registerDevice(DeviceRegistrationRequest deviceRegistrationRequest) {
-        registerDeviceHandler.registerDevice(new RegisterDeviceCommand(
+        DeviceRegistration deviceRegistration = registerDeviceHandler.registerDevice(new RegisterDeviceCommand(
                 deviceRegistrationRequest.getDeviceType().getValue(),
                 deviceRegistrationRequest.getMacAddress(),
                 deviceRegistrationRequest.getUplinkMacAddress()));
-        return ResponseEntity.created(URI.create("/devices/%s".formatted(deviceRegistrationRequest.getMacAddress())))
+        return ResponseEntity.created(URI.create("/devices/%s"
+                        .formatted(deviceRegistration.getDeviceMacAddress().value())))
                 .body(new DeviceSummary(
-                        deviceRegistrationRequest.getDeviceType(), deviceRegistrationRequest.getMacAddress()));
+                        DeviceType.valueOf(deviceRegistration.getDeviceType().name()),
+                        deviceRegistration.getDeviceMacAddress().value()));
     }
 }

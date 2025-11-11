@@ -18,9 +18,8 @@ class RegisterDeviceHandlerImplTest {
         RegisterDeviceCommand command = new RegisterDeviceCommand("SWITCH", "7b:12:d6:29:0b:ee", null);
         Mockito.when(deviceInfrastructureService.registerDevice(Mockito.any())).thenReturn(1L);
 
-        Long deviceId = registerDeviceHandler.registerDevice(command);
+        registerDeviceHandler.registerDevice(command);
 
-        assertEquals(1L, deviceId);
         Mockito.verify(deviceInfrastructureService, Mockito.times(1)).registerDevice(Mockito.any());
     }
 
@@ -29,9 +28,8 @@ class RegisterDeviceHandlerImplTest {
         RegisterDeviceCommand command = new RegisterDeviceCommand("SWITCH", "7b:12:d6:29:0b:ee", "0d:69:d7:cc:f6:d9");
         Mockito.when(deviceInfrastructureService.registerDevice(Mockito.any())).thenReturn(1L);
 
-        Long deviceId = registerDeviceHandler.registerDevice(command);
+        registerDeviceHandler.registerDevice(command);
 
-        assertEquals(1L, deviceId);
         Mockito.verify(deviceInfrastructureService, Mockito.times(1)).registerDevice(Mockito.any());
     }
 }

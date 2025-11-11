@@ -14,7 +14,7 @@ public final class MacAddress {
         if (value == null || !value.matches(MAC_ADDRESS_REGEX)) {
             throw new InvalidMacAddressException("Invalid MAC address format");
         }
-        this.value = value;
+        this.value = value.toUpperCase();
     }
 
     public static MacAddress of(String value) {

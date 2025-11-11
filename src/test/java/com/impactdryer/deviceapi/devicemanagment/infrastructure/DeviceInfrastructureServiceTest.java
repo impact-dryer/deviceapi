@@ -275,7 +275,7 @@ class DeviceInfrastructureServiceTest {
     void shouldThrowWhenGettingSubtreeForNonExistingMacAddress() {
         when(deviceRepository.findAllFromDevice(Mockito.any())).thenReturn(List.of());
         assertThrows(
-                DeviceNotFound.class,
+                DeviceNotFoundException.class,
                 () -> deviceInfrastructureService.getTreeRootedAt(MacAddress.of("00:00:00:00:00:FF")));
     }
 

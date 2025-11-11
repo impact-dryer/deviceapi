@@ -1,9 +1,7 @@
 package com.impactdryer.deviceapi.devicemanagment.web;
 
 import com.impactdryer.deviceapi.devicemanagment.domain.InvalidMacAddressException;
-import com.impactdryer.deviceapi.devicemanagment.infrastructure.MultipleRootDevicesFoundException;
-import com.impactdryer.deviceapi.devicemanagment.infrastructure.NoRootDeviceFoundException;
-import com.impactdryer.deviceapi.devicemanagment.infrastructure.NoUplinkFoundException;
+import com.impactdryer.deviceapi.devicemanagment.infrastructure.*;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -39,6 +37,16 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     public ProblemDetail handleValidationException(ValidationException ex) {
         return createProblemDetail(
                 ex, HttpStatus.BAD_REQUEST, "Validation Error " + ex.getCause().getMessage());
+    }
+
+    @ExceptionHandler(DeviceAlreadyRegisteredException.class)
+    public ProblemDetail handleDeviceAlreadyRegisteredException(DeviceAlreadyRegisteredException ex) {
+        return createProblemDetail(ex, HttpStatus.CONFLICT, "Device Already Registered");
+    }
+
+    @ExceptionHandler(DeviceNotFoundException.class)
+    public ProblemDetail handleDeviceNotFoundException(DeviceNotFoundException ex) {
+        return createProblemDetail(ex, HttpStatus.NOT_FOUND, "Device Not Found");
     }
 
     @ExceptionHandler(Exception.class)
