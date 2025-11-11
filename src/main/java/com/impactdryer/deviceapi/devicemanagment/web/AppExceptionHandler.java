@@ -1,6 +1,5 @@
 package com.impactdryer.deviceapi.devicemanagment.web;
 
-import com.impactdryer.deviceapi.devicemanagment.domain.InvalidMacAddressException;
 import com.impactdryer.deviceapi.devicemanagment.infrastructure.*;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
@@ -26,11 +25,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MultipleRootDevicesFoundException.class)
     public ProblemDetail handleMultipleRootDevicesFoundException(MultipleRootDevicesFoundException ex) {
         return createProblemDetail(ex, HttpStatus.BAD_REQUEST, "Multiple Root Devices Found");
-    }
-
-    @ExceptionHandler(InvalidMacAddressException.class)
-    public ProblemDetail handleInvalidMacAddressException(InvalidMacAddressException ex) {
-        return createProblemDetail(ex, HttpStatus.BAD_REQUEST, "Invalid MAC Address");
     }
 
     @ExceptionHandler(ValidationException.class)

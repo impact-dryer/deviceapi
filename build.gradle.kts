@@ -152,8 +152,6 @@ val openApiSpecPathForward = openApiSpecFile.absolutePath.replace("\\", "/")
 
 openApiGenerate {
   generatorName.set("spring")
-  // Prefer proper file URI (handles Windows paths); plugin also accepts forward-slash path if
-  // needed
   inputSpec.set(openApiSpecUri)
   outputDir.set("$buildDir/generated")
   apiPackage.set("com.impactdryer.deviceapi.infrastructure.openapi")

@@ -23,3 +23,29 @@ Use script start.sh
 ```bash
 ./start.sh
 ```
+
+
+## Open api location
+Open api spec is located in `resources/openapi/api-spec.yaml`
+
+Controllers are created using open api generator.
+
+
+```
+openApiGenerate {
+  generatorName.set("spring")
+  inputSpec.set(openApiSpecUri)
+  outputDir.set("$buildDir/generated")
+  apiPackage.set("com.impactdryer.deviceapi.infrastructure.openapi")
+  modelPackage.set("com.impactdryer.deviceapi.infrastructure.openapi.model")
+  configOptions.set(
+    mapOf(
+      "useSpringBoot3" to "true",
+      "delegatePattern" to "true",
+      "performBeanValidation" to "true",
+      "useSwaggerUI" to "false",
+      "apiNameSuffix" to "",
+    )
+  )
+}
+```
